@@ -225,7 +225,7 @@
 
 - [ ] **Step 1: Add post-skill scenarios**
 
-  Add stable IDs for `describe-page-schema`, `describe-all-syntax`, `sliq-known-page`, `sliq-knowledge-empty`, `search-marker-hit`, `search-no-hit`, `search-knowledge-scope-empty`, `search-single-file-hit`, `search-single-file-path-mismatch`, and `runtime-invocation-error`; also cover capture, search without tags, strict source/type/topic filters, system-content exclusion, missing-plugin fallback, explicit update conflict, dynamic type addition, unknown source fallback, topic reuse, and read-back verification.
+  Add stable IDs for `describe-page-schema`, `describe-all-syntax`, `sliq-known-page`, `sliq-knowledge-empty`, `search-marker-hit`, `search-no-hit`, `search-knowledge-scope-empty`, `search-single-file-hit`, `search-single-file-path-mismatch`, and `runtime-invocation-error`; project raw Silversearch `matches`/`excerpts` fields and derive counts only when useful. Also cover capture, search without tags, strict source/type/topic filters, system-content exclusion, missing-plugin fallback, explicit update conflict, dynamic type addition, HTTPS/SSH source normalization, unknown source fallback, topic reuse, and read-back verification.
 
 - [ ] **Step 2: Define scenario assertions**
 

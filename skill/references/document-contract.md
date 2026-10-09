@@ -22,7 +22,7 @@ tags:
 
 Resolve the source in this order:
 
-1. Git remote repository name.
+1. Git remote repository name, taking the final path component from either an HTTPS URL or an SSH scp-style remote such as `git@host:org/project.git` and removing the `.git` suffix.
 2. Git root directory name.
 3. `unknown` when neither can be confirmed.
 
