@@ -1,6 +1,6 @@
 # silverbullet-kb evals
 
-The eval set tests agent decisions and observable command choices, not whether a model can repeat the prose in `SKILL.md`. `baseline.md` records the RED behavior observed before the skill was written. The JSON cases are the GREEN contract to run with the skill loaded.
+The eval set tests agent decisions and observable command choices, not whether a model can repeat the prose in `SKILL.md`. `baseline.md` records the RED behavior observed before the skill was written. `green-results.md` records the fresh-context reruns that have already been performed. The JSON cases are the GREEN contract to run with the skill loaded.
 
 ## Phases
 

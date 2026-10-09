@@ -44,7 +44,7 @@ sb eval 'silversearch.search("distinctive phrase", {silent=true})' --json
 sb eval 'silversearch.search("distinctive phrase", {silent=true, singleFilePath="Knowledge/example.md"})' --json
 ```
 
-Successful hits currently contain fields such as `name`, `score`, `matches`, `excerpts`, and `basename`; a caller may compute match/excerpt counts as a projection. Project only stable fields before returning evidence and read the page before using `content` as evidence. `singleFilePath` needs the Space-relative Markdown filename including `.md`; an empty result with a path missing `.md` is a path-format miss worth correcting once.
+Successful hits currently contain fields such as `name`, `score`, `matches`, `excerpts`, and `basename`; a caller may compute match/excerpt counts as a projection. This is the observed plug shape, so inspect live results when the plug version changes. Project only stable fields before returning evidence and read the page before using `content` as evidence. `singleFilePath` needs the Space-relative Markdown filename including `.md`; an empty result with a path missing `.md` is a path-format miss worth correcting once.
 
 Do not call an undocumented `syscall` entry point and do not assume a standalone `sb search` command. An exit 1 such as a nil `syscall` call is `query_error`; repair the invocation or use SLIQ/file fallback.
 
@@ -53,7 +53,7 @@ Do not call an undocumented `syscall` entry point and do not assume a standalone
 | Exit | Meaning | Agent next action |
 | ---: | --- | --- |
 | 0 with hits | Query or write succeeded | Read/project evidence or verify the write |
-| 0 with `{}` or `count: 0` | Valid empty result | Relax one term/filter or switch engine once |
+| 0 with `{}`, `[]`, or `count: 0` | Valid empty result | Relax one term/filter or switch engine once |
 | 2 | Invalid input | Correct the command; do not report missing knowledge |
 | 3 | Missing target | Confirm the path or classify as an empty candidate set |
 | 4 | Access denied | Report the capability/permission gap |
@@ -69,3 +69,4 @@ Do not call an undocumented `syscall` entry point and do not assume a standalone
 - [Integrated Query](https://github.com/silverbulletmd/silverbullet/blob/main/docs/Space%20Lua/Integrated%20Query.md)
 - [Runtime API](https://github.com/silverbulletmd/silverbullet/blob/main/docs/Runtime%20API.md)
 - [Full Text Search](https://github.com/silverbulletmd/silverbullet/blob/main/docs/Full%20Text%20Search.md)
+- [Silversearch plug](https://github.com/MrMugame/silversearch)

@@ -255,6 +255,7 @@
 **Files:**
 - Modify: `skill/SKILL.md` and relevant references only if a tested loophole is found.
 - Modify: `skill/evals/evals.json` and `skill/evals/baseline.md` only if the recorded behavior needs correction.
+- Create or modify: `skill/evals/green-results.md`
 
 **Interfaces:**
 - Consumes: the complete installed skill and the RED baseline.

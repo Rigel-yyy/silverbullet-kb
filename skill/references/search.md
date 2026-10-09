@@ -23,13 +23,15 @@ Silversearch `#tag` input can boost ranking but does not enforce an exact tag fi
 
 Use live schema discovery before assuming fields, then query `index.pages()` with a path restriction such as `p.name:startsWith("Knowledge/")`. Filter the `tags` array for exact namespace values like `source/project`, `type/experience`, or `topic/concurrency`. Inspect the actual inventory to reuse spellings; schema names alone do not define the value set.
 
-When the query returns `{}` or `count: 0` with exit 0, classify it as `empty` for that scope and query. It may mean the directory is empty, the term is too narrow, or a path expression is wrong. It is not an index failure.
+When the query returns `{}`, `[]`, or `count: 0` with exit 0, classify it as `empty` for that scope and query. It may mean the directory is empty, the term is too narrow, or a path expression is wrong. It is not an index failure.
 
 ## Mixed queries and fallback
 
 For mixed requests, use SLIQ to narrow candidates and read them, or use Silversearch's `singleFilePath` with the exact `.md` filename for content confirmation. If `singleFilePath` omits `.md` and returns empty, correct the path once before trying another strategy.
 
 If Runtime or Silversearch is unavailable, use `sb fs ls Knowledge --recursive --glob '*.md'` and read a bounded set of candidate files. If `fs ls --limit` exits 7, continue pagination or remove the limit before drawing conclusions. A command exit 2, 4, 5, 6, or 8 is an operational condition, not an empty knowledge result.
+
+If the caller explicitly requests whole-Space search, record the scope change in the result and label any `Library/`, `Repositories/`, or plug matches as outside the formal KB. An empty `Knowledge/` query never authorizes this expansion by itself.
 
 ## One controlled relaxation
 

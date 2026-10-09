@@ -19,7 +19,7 @@ The consumer is the calling agent. Load the matching reference and return machin
 ## Shared contract
 
 - Default to the flat top-level `Knowledge/` scope. Do not search `Library/`, `Repositories/`, plug code, or other Space content without an explicit whole-Space request.
-- Normalize every command into `status`, `evidence`, and `next`. Exit 0 with `{}` or `count: 0` is `empty`; non-zero exit is an operational error; unavailable index is `index_unavailable`.
+- Normalize every command into `status`, `evidence`, and `next`. Exit 0 with `{}`, `[]`, or `count: 0` is `empty`; non-zero exit is an operational error; unavailable index is `index_unavailable`.
 - Read candidate pages before using them. Keep path, H1, tags, modification time, excerpt/anchor, and match reason.
 - Capture follows explicit invocation and `--create`; it never silently merges or updates a similar page. Update is separate: read the revision, write with `--if-match`, reread after success, and never recover with `--overwrite`.
 

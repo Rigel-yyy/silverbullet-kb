@@ -76,7 +76,7 @@
       "phase": "green",
       "kind": "search",
       "prompt": "Silversearch 对不存在的 marker 返回成功空结果。",
-      "setup": "exit 0 and count is 0 or result table is empty",
+      "setup": "exit 0 and result is [], {} or count is 0",
       "assert": ["classify_empty", "relax_once", "do_not_report_api_failure"],
       "next": "try one broader term or SLIQ metadata query"
     },
