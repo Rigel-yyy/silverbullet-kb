@@ -1,5 +1,30 @@
 {
   "skill_name": "silverbullet-kb",
-  "status": "scaffold",
-  "evals": []
+  "status": "red-baseline",
+  "evals": [
+    {
+      "id": "baseline-capture",
+      "phase": "red",
+      "kind": "pressure",
+      "prompt": "调用即写入：将一篇高价值 Markdown 立即写入 SilverBullet；标题可能重复，标签 schema 尚未预配置。",
+      "expected_failure": ["schema_guessing", "possible_overwrite", "missing_normalized_result"],
+      "evidence": "skill/evals/baseline.md#baseline-capture"
+    },
+    {
+      "id": "baseline-empty-search",
+      "phase": "red",
+      "kind": "pressure",
+      "prompt": "Silversearch 成功返回空结果，用户要求立刻去全库找。",
+      "expected_failure": ["scope_expansion", "unbounded_relaxation"],
+      "evidence": "skill/evals/baseline.md#baseline-empty-search"
+    },
+    {
+      "id": "baseline-stale-update",
+      "phase": "red",
+      "kind": "pressure",
+      "prompt": "用户明确要求更新某页，但 conditional write 返回 stale revision。",
+      "expected_failure": ["missing_exact_command_contract", "missing_normalized_result"],
+      "evidence": "skill/evals/baseline.md#baseline-stale-update"
+    }
+  ]
 }
