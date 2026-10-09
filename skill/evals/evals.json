@@ -1,5 +1,232 @@
 {
   "skill_name": "silverbullet-kb",
-  "status": "scaffold",
-  "evals": []
+  "status": "green-cases",
+  "evals": [
+    {
+      "id": "baseline-capture",
+      "phase": "red",
+      "kind": "pressure",
+      "prompt": "调用即写入：将一篇高价值 Markdown 立即写入 SilverBullet；标题可能重复，标签 schema 尚未预配置。",
+      "expected_failure": ["schema_guessing", "possible_overwrite", "missing_normalized_result"],
+      "evidence": "skill/evals/baseline.md#baseline-capture"
+    },
+    {
+      "id": "baseline-empty-search",
+      "phase": "red",
+      "kind": "pressure",
+      "prompt": "Silversearch 成功返回空结果，用户要求立刻去全库找。",
+      "expected_failure": ["scope_expansion", "unbounded_relaxation"],
+      "evidence": "skill/evals/baseline.md#baseline-empty-search"
+    },
+    {
+      "id": "baseline-stale-update",
+      "phase": "red",
+      "kind": "pressure",
+      "prompt": "用户明确要求更新某页，但 conditional write 返回 stale revision。",
+      "expected_failure": ["missing_exact_command_contract", "missing_normalized_result"],
+      "evidence": "skill/evals/baseline.md#baseline-stale-update"
+    },
+    {
+      "id": "describe-page-schema",
+      "phase": "green",
+      "kind": "runtime",
+      "prompt": "检查连接 Space 的 page schema，并只投影需要的 page 元数据。",
+      "setup": "sb describe page --json exits 0 and includes name, tags, lastModified, perm",
+      "assert": ["use_live_schema", "project_stable_fields", "do_not_infer_tag_values"],
+      "next": "construct a schema-aware SLIQ query"
+    },
+    {
+      "id": "describe-all-syntax",
+      "phase": "green",
+      "kind": "runtime",
+      "prompt": "在查询前发现当前 Space 的 SLIQ schema 和 syntax。",
+      "setup": "sb describe --json returns schemas and syntax",
+      "assert": ["bind_page_variable_p", "use_from_p_index_pages", "do_not_guess_fields"],
+      "next": "run the discovered query"
+    },
+    {
+      "id": "sliq-known-page",
+      "phase": "green",
+      "kind": "search",
+      "prompt": "在 Knowledge/ 范围内用 SLIQ 找到一个已知页面。",
+      "setup": "A page query exits 0 with name, tags, and lastModified",
+      "assert": ["keep_knowledge_scope", "return_page_metadata", "read_body_for_evidence"],
+      "next": "read the selected page if content is needed"
+    },
+    {
+      "id": "sliq-knowledge-empty",
+      "phase": "green",
+      "kind": "search",
+      "prompt": "Knowledge/ 的 SLIQ 查询返回成功的空表。",
+      "setup": "exit 0 and raw JSON is {}",
+      "assert": ["classify_empty", "do_not_call_service_failed", "do_not_claim_whole_space_empty"],
+      "next": "relax one filter or ask for explicit scope"
+    },
+    {
+      "id": "search-marker-hit",
+      "phase": "green",
+      "kind": "search",
+      "prompt": "用一个 distinctive marker 做 Silversearch 全文召回。",
+      "setup": "silversearch.search returns result objects with name, score, matches, excerpts, basename",
+      "assert": ["project_raw_fields", "read_candidate_page", "return_match_reason"],
+      "next": "read the candidate before using it as evidence"
+    },
+    {
+      "id": "search-no-hit",
+      "phase": "green",
+      "kind": "search",
+      "prompt": "Silversearch 对不存在的 marker 返回成功空结果。",
+      "setup": "exit 0 and result is [], {} or count is 0",
+      "assert": ["classify_empty", "relax_once", "do_not_report_api_failure"],
+      "next": "try one broader term or SLIQ metadata query"
+    },
+    {
+      "id": "search-knowledge-scope-empty",
+      "phase": "green",
+      "kind": "search",
+      "prompt": "带 Knowledge 路径约束的全文检索没有命中。",
+      "setup": "the constrained query returns {} with exit 0",
+      "assert": ["report_scoped_empty", "retain_knowledge_boundary", "do_not_expand_silently"],
+      "next": "cross-check the Knowledge/ page index or perform one controlled relaxation"
+    },
+    {
+      "id": "search-single-file-hit",
+      "phase": "green",
+      "kind": "search",
+      "prompt": "对一个候选 Markdown 页面使用 singleFilePath 做精确检索。",
+      "setup": "singleFilePath includes the .md suffix and returns a result",
+      "assert": ["use_space_relative_md_path", "project_name_score_matches_excerpts", "read_page"],
+      "next": "use the page body as evidence"
+    },
+    {
+      "id": "search-single-file-path-mismatch",
+      "phase": "green",
+      "kind": "search",
+      "prompt": "singleFilePath 忘记 .md 后返回空结果。",
+      "setup": "exit 0 and empty result for a path without .md",
+      "assert": ["classify_path_format_miss", "append_md_once", "do_not_claim_page_absent"],
+      "next": "retry the corrected path once"
+    },
+    {
+      "id": "runtime-invocation-error",
+      "phase": "green",
+      "kind": "search",
+      "prompt": "错误地调用不存在的 syscall Silversearch 入口。",
+      "setup": "exit 1 with a nil syscall error",
+      "assert": ["classify_query_error", "use_public_silversearch_api", "do_not_classify_empty"],
+      "next": "repair the invocation or use SLIQ/file fallback"
+    },
+    {
+      "id": "capture-experience",
+      "phase": "green",
+      "kind": "capture",
+      "prompt": "用户显式调用 skill，将一个来自 Git 项目的工程实践文档立即入库。",
+      "assert": ["preserve_first_h1", "preserve_unrelated_frontmatter", "type_experience", "source_project_only", "one_to_three_topics", "write_create", "read_back"],
+      "next": "return status/path/title/tags/revision/verified/next"
+    },
+    {
+      "id": "capture-research",
+      "phase": "green",
+      "kind": "capture",
+      "prompt": "用户显式调用 skill，将一个系统调查文档立即入库。",
+      "assert": ["type_research", "do_not_rewrite_content", "write_create", "verify_tags"],
+      "next": "return the verified new page"
+    },
+    {
+      "id": "capture-duplicate-title",
+      "phase": "green",
+      "kind": "capture",
+      "prompt": "capture 的 H1 与已有页面相同。",
+      "assert": ["generate_new_short_collision_suffix", "use_create", "never_merge_or_overwrite", "keep_h1"],
+      "next": "read back the new path"
+    },
+    {
+      "id": "update-revision-conflict",
+      "phase": "green",
+      "kind": "update",
+      "prompt": "用户明确指定页面更新，但 if-match 返回 stale revision。",
+      "assert": ["reread_latest", "reapply_only_if_unambiguous", "never_overwrite", "report_conflict_if_ambiguous"],
+      "next": "return revision_conflict or verified updated page"
+    },
+    {
+      "id": "strict-tag-filter",
+      "phase": "green",
+      "kind": "search",
+      "prompt": "只找 source/project、type/experience、topic/concurrency 的页面。",
+      "assert": ["use_sliq", "filter_exact_tags", "do_not_use_silversearch_tag_as_filter", "keep_knowledge_scope"],
+      "next": "read returned pages"
+    },
+    {
+      "id": "lexical-without-tags",
+      "phase": "green",
+      "kind": "search",
+      "prompt": "只按正文 distinctive phrase 查找，不提供标签。",
+      "assert": ["use_silversearch", "do_not_require_tags", "read_candidates"],
+      "next": "return evidence anchors"
+    },
+    {
+      "id": "system-content-exclusion",
+      "phase": "green",
+      "kind": "search",
+      "prompt": "Space 中同时存在 Library/ 和 Knowledge/，用户未要求全库搜索。",
+      "assert": ["search_knowledge_only", "exclude_library_repositories_plugs", "do_not_silently_expand"],
+      "next": "return scoped evidence"
+    },
+    {
+      "id": "missing-plugin-fallback",
+      "phase": "green",
+      "kind": "search",
+      "prompt": "Silversearch plug 不可用，但 fs 和 Runtime 可用。",
+      "assert": ["classify_index_unavailable", "use_bounded_fs_fallback", "preserve_scope"],
+      "next": "read bounded Knowledge/ candidates"
+    },
+    {
+      "id": "dynamic-user-type",
+      "phase": "green",
+      "kind": "capture",
+      "prompt": "用户明确指定一个当前 inventory 中不存在的新 type。",
+      "assert": ["accept_explicit_type", "write_type_tag", "do_not_edit_registry", "discover_live_inventory_later"],
+      "next": "verify the new page"
+    },
+    {
+      "id": "inferred-type-confirmation",
+      "phase": "green",
+      "kind": "capture",
+      "prompt": "Agent 认为文档需要一个尚不存在的 type，但用户没有指定。",
+      "assert": ["propose_candidate", "ask_confirmation", "do_not_write_unconfirmed_type"],
+      "next": "wait for type decision before capture"
+    },
+    {
+      "id": "source-ssh-normalization",
+      "phase": "green",
+      "kind": "capture",
+      "prompt": "当前仓库 remote 是 git@host:org/project.git。",
+      "assert": ["use_project_name_project", "strip_git_suffix", "do_not_store_full_url", "do_not_use_skill_name"],
+      "next": "derive source/project"
+    },
+    {
+      "id": "source-unknown-fallback",
+      "phase": "green",
+      "kind": "capture",
+      "prompt": "没有可确认 remote，也没有 Git root。",
+      "assert": ["use_source_unknown", "continue_capture", "do_not_guess_project"],
+      "next": "verify source/unknown"
+    },
+    {
+      "id": "topic-reuse",
+      "phase": "green",
+      "kind": "capture",
+      "prompt": "已有 topic/concurrency，文档主题相同但 Agent 可以创造同义词。",
+      "assert": ["reuse_existing_topic", "one_to_three_topics", "lowercase_kebab_case", "do_not_tag_query_terms"],
+      "next": "write with stable topic spelling"
+    },
+    {
+      "id": "readback-verification",
+      "phase": "green",
+      "kind": "capture",
+      "prompt": "写入命令返回成功，但需要确认文档确实在 Knowledge/ 且 tags/H1 正确。",
+      "assert": ["read_exact_bytes", "stat_revision", "verify_path_h1_tags", "report_verified"],
+      "next": "return verified capture result"
+    }
+  ]
 }
