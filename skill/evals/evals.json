@@ -121,7 +121,7 @@
       "phase": "green",
       "kind": "capture",
       "prompt": "用户显式调用 skill，将一个来自 Git 项目的工程实践文档立即入库。",
-      "assert": ["preserve_first_h1", "type_experience", "source_project_only", "one_to_three_topics", "write_create", "read_back"],
+      "assert": ["preserve_first_h1", "preserve_unrelated_frontmatter", "type_experience", "source_project_only", "one_to_three_topics", "write_create", "read_back"],
       "next": "return status/path/title/tags/revision/verified/next"
     },
     {

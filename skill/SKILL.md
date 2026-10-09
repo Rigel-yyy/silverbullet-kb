@@ -33,7 +33,7 @@ Use Silversearch for lexical recall, SLIQ for exact `source`, `type`, and `topic
 
 ## Capture and update loop
 
-For capture, preserve the first H1, derive one source/type and one to three topics, generate a readable slug plus short collision suffix under `Knowledge/`, create, and read back. For update, require a path, page link, or unambiguous title; preserve unrelated content and use the revision guard. H1 changes never rename paths; aliases are not maintained by default.
+For capture, read the upstream bytes and frontmatter, preserve unrelated keys and the first H1, derive one source/type and one to three topics from the live inventory, generate a readable slug plus short collision suffix under `Knowledge/`, create, and read back. For update, require a path, page link, or unambiguous title; preserve unrelated content and use the revision guard. H1 changes never rename paths; aliases are not maintained by default.
 
 ## Hard boundaries
 

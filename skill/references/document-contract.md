@@ -2,6 +2,10 @@
 
 The KB stores user-selected high-value documents under a flat top-level `Knowledge/` directory. The path is a stable storage address; the first H1 is the display title. The upstream document may not know this contract, so the skill applies it at capture time.
 
+## Pre-capture probes
+
+Read the complete upstream bytes before changing metadata. Resolve the project with `git remote get-url origin` (parse the final repository component from HTTPS or SSH scp-style syntax and remove `.git`), then fall back to `git rev-parse --show-toplevel` and its directory name, then `unknown`. When Runtime is available, inspect the live page index and reuse existing `source/`, `type/`, and `topic/` spellings; this is discovery, not a manually maintained registry. If the agent infers a type outside the known values, stop at `needs_type_confirmation` instead of inventing one.
+
 ## Frontmatter
 
 Use a `tags` array with exactly one tag from each required role:
@@ -17,6 +21,8 @@ tags:
 ```
 
 `source` identifies the producing project, `type` identifies the primary knowledge shape, and `topic` identifies one to three core subjects. Tags are primarily for strict filtering; full-text search still works without them.
+
+Preserve unrelated frontmatter keys, values, and document body. Only normalize or add the contract-controlled `tags` array. If existing tags contain metadata that cannot be represented without losing meaning, stop with a format ambiguity instead of silently deleting it.
 
 ## Source
 
@@ -43,6 +49,8 @@ Choose one to three topics that describe the document's core subjects. Use lower
 Preserve the upstream first H1 exactly as the display title. Generate a readable path slug plus a short collision suffix, for example `Knowledge/distributed-lock-pitfall--a7f3.md`. Keep the path flat and stable when the H1 changes. Do not add aliases by default.
 
 If the generated path exists during capture, generate another short suffix and create a new page. Never turn capture into a similarity search, merge, or overwrite.
+
+The collision loop is path-based: check or attempt the candidate path, and on a create conflict generate another short suffix and retry `--create`. Do not use a title match or similar content as an update key.
 
 ## Capture
 

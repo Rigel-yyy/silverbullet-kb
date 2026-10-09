@@ -4,7 +4,7 @@ These are the fresh-context reruns performed after the skill and references were
 
 ## capture pressure
 
-The agent loaded `SKILL.md` and the document/CLI references. It preserved the upstream H1, derived `source/project` from an SSH remote, selected exactly one type and one to three topics, wrote a `tags` array, generated a flat slug plus short collision suffix, used `sb fs write ... --create`, and read back bytes and revision. It rejected `topics`/inline tag guesses, similarity merge, `-2` title semantics, and `--overwrite`. It returned a structured capture result with `status`, `path`, `title`, `tags`, `revision`, `verified`, and `next`.
+The agent loaded `SKILL.md` and the document/CLI references. It preserved the upstream H1 and unrelated frontmatter, derived `source/project` from an SSH remote, selected exactly one type and one to three topics, wrote a `tags` array, generated a flat slug plus short collision suffix, used `sb fs write ... --create`, and read back bytes and revision. It rejected `topics`/inline tag guesses, similarity merge, `-2` title semantics, and `--overwrite`. It returned a structured capture result with `status`, `path`, `title`, `tags`, `revision`, `verified`, and `next`.
 
 ## empty-search pressure
 
