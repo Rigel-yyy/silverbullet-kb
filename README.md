@@ -9,6 +9,8 @@
 - `skill/SKILL.md`: Skill 入口，包含 inspect、capture、search、update 和结果解释协议。
 - `skill/references/`: SilverBullet CLI、检索路由、文档和标签契约。
 - `skill/evals/evals.json`: RED/GREEN 行为评测集；`baseline.md` 保存无 skill 时的压力行为。
+- `bot/`: 遵循 ADR 0002 的专职夜间维护 bot 资产 (`SOUL.md`、`skills/kb-nightly-distill/SKILL.md`、`scripts/fetch_hindsight_docs.py` 与 `bot/README.md`)，负责增量消费 Hindsight 会话文档、按四门控筛选并向 `Knowledge/` 执行条件写入与事后汇报。
+- `tests/`: 零外部网络、基于临时目录隔离的抓取脚本与安装器确定性单测。
 - `docs/decisions.md`: 只追加的设计决策日志。
 - `docs/adr/`: 架构决策记录；0001 定义 agent-native 边界，0002 区分交互式 agent 与专职定时维护者。
 
@@ -22,6 +24,7 @@ SilverBullet 是 Markdown 文件的云端知识库；本仓库维护 agent 使�
 
 - `python3 install.py verify` — 只读探测。0 = 双链接收敛；10 = 可调和（链接缺失，install 可建）；20 = 冲突（链接路径被他属内容占用或指向别处，需人工移除）。原因写 stderr。
 - `python3 install.py install` — 建链并以 verify 复验收尾。0 = 收敛；20 = 冲突 fail-closed（零 mutation）；1 = 环境错误；2 = 用法错误。幂等，可重复执行。
+- `python3 install.py bot verify|install [--bot-name <name> | --bot-home <path>]` — 可选的夜间维护 bot 资产安装接口 (ADR 0002)，沿用相同 0/10/20 fail-closed 协议，仅链接 `bot/SOUL.md` 与 `bot/skills/kb-nightly-distill` (到 `skills/`、`.claude/skills/`、`.agents/skills/`)，绝不触碰 Orca 托管的 `AGENTS.md`、`CLAUDE.md`、`bot.json` 或本地 `memory/`。详细配置见 `bot/README.md`。
 - 目标：`~/.claude/skills/silverbullet-kb` 与 `~/.agents/skills/silverbullet-kb` 两个 symlink，均指向本 checkout 的 `skill/`——checkout 内的文本编辑对两个 harness 即时生效，无需重装。Windows 上 symlink 需要开发者模式或管理员权限，失败时报错退出（1），不降级为 copy。
 
 ## 状态
