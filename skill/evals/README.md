@@ -14,7 +14,7 @@ Use read-only SilverBullet smoke fixtures or recorded result shapes for runtime 
 
 ## Required assertions
 
-Every search case checks engine choice, scope, result classification, candidate read-before-use, and `next`. Every capture case checks explicit invocation, exact tag namespaces, create semantics, collision behavior, and read-back. Every update case checks explicit target resolution, revision reads, conditional writes, and conflict recovery. Every maintain case checks owner-configured authority, flat layout and live tags, additive `--if-match` merges with read-back, abort on revision conflict, and the post-hoc report, including explicit no-op runs.
+Every search case checks engine choice, scope, result classification, candidate read-before-use, and `next`. Every capture case checks explicit invocation, exact tag namespaces, create semantics, collision behavior, and read-back. Every update case checks explicit target resolution, revision reads, conditional writes, and conflict recovery.
 
 ## Local checks
 

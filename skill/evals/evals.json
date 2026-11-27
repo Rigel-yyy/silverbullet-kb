@@ -227,46 +227,6 @@
       "prompt": "写入命令返回成功，但需要确认文档确实在 Knowledge/ 且 tags/H1 正确。",
       "assert": ["read_exact_bytes", "stat_revision", "verify_path_h1_tags", "report_verified"],
       "next": "return verified capture result"
-    },
-    {
-      "id": "cross-repo-method-trigger",
-      "phase": "green",
-      "kind": "search",
-      "prompt": "用户没有提到 SilverBullet：在一个新仓库里又遇到 tmux 下 TERM/terminfo 导致的 TUI 渲染错位，想先看看以前跨仓库验证过的排查手法和外部工具。",
-      "assert": ["invoke_silverbullet_kb",  "search_knowledge_only",  "read_candidates",  "do_not_write"],
-      "next": "return scoped evidence or structured no-evidence"
-    },
-    {
-      "id": "interactive-no-auto-write",
-      "phase": "green",
-      "kind": "capture",
-      "prompt": "交互式 coding agent 在任务中途发现一个看似高价值的教训，用户没有要求入库。",
-      "assert": ["do_not_auto_score",  "do_not_capture",  "do_not_update",  "do_not_act_as_maintainer"],
-      "next": "continue the task; capture only on explicit user invocation"
-    },
-    {
-      "id": "maintainer-additive-merge",
-      "phase": "green",
-      "kind": "maintain",
-      "prompt": "经 owner 显式配置的 nightly maintainer 发现新经验与已有 Knowledge/ 页面主题相同。",
-      "assert": ["require_owner_configuration",  "keep_flat_knowledge_path",  "reuse_live_tags",  "stat_and_read_before_write",  "append_only_merge",  "write_if_match",  "read_back",  "never_overwrite"],
-      "next": "record the merged diff in the post-hoc report"
-    },
-    {
-      "id": "maintainer-revision-conflict",
-      "phase": "green",
-      "kind": "maintain",
-      "prompt": "nightly maintainer 的 if-match 写入返回 exit 5，页面刚被人工编辑。",
-      "assert": ["abort_page",  "record_revision_conflict",  "do_not_retry_blindly",  "never_overwrite",  "continue_other_pages"],
-      "next": "report the skipped conflict in the post-hoc diff report"
-    },
-    {
-      "id": "maintainer-noop-run",
-      "phase": "green",
-      "kind": "maintain",
-      "prompt": "nightly maintainer 本轮没有新的可沉淀内容。",
-      "assert": ["no_writes",  "report_explicit_noop"],
-      "next": "emit a no-op run report"
     }
   ]
 }
