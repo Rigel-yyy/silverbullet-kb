@@ -2,6 +2,8 @@
 
 Status: proposed
 
+Extended by: [ADR 0002](0002-scheduled-maintainer-boundary.md), which adds a dedicated scheduled maintainer without changing the rules below for interactive agents.
+
 ## Context
 
 The SilverBullet Space contains both user knowledge and the files that make SilverBullet run, while the main consumer of this skill is an agent. A search result therefore has to carry enough state for the agent to choose its next operation; a human-oriented "nothing found" message is not enough. The KB also needs an explicit value boundary because the user, rather than an automatic classifier, decides which generated documents are worth storing.

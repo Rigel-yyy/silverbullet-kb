@@ -10,6 +10,7 @@
 - `skill/references/`: SilverBullet CLI、检索路由、文档和标签契约。
 - `skill/evals/evals.json`: RED/GREEN 行为评测集；`baseline.md` 保存无 skill 时的压力行为。
 - `docs/decisions.md`: 只追加的设计决策日志。
+- `docs/adr/`: 架构决策记录；0001 定义 agent-native 边界，0002 区分交互式 agent 与专职定时维护者。
 
 ## 设计边界
 

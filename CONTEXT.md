@@ -10,6 +10,18 @@ The explicit user-invoked operation that writes a selected document into the KB.
 **Update**:
 The explicit operation that modifies an existing KB page identified by a path, page link, or unique title. Updates read the latest revision and use conditional writing; capture never silently turns into an update.
 
+**Interactive agent**:
+A coding agent working on a user task. It is read-first: it may search `Knowledge/` at any time, but it writes only through an explicit user-invoked capture or update and never auto-scores or auto-writes mid-task.
+
+**Scheduled maintainer**:
+A dedicated bot, such as the Orca nightly bot, that the owner has explicitly configured to keep `Knowledge/` current. It may capture and merge automatically under the same layout, tag, and conditional-write contract, merges additively, aborts on revision conflict, and reports every run afterward.
+
+**Additive merge**:
+A maintainer change that appends or extends sections of an existing page under an `--if-match` revision guard. It never replaces the full page, removes human-authored content, or renames the path.
+
+**Post-hoc report**:
+The diff summary a scheduled maintainer emits after each run: created pages, merged pages with diffs, skipped conflicts, errors, or an explicit no-op. The owner reviews it after the fact instead of approving writes in advance.
+
 **Search query**:
 The temporary words and filters used to retrieve documents for the current question. A query may use full-text terms or exact structural filters and is not itself stored as a tag.
 
