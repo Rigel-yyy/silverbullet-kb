@@ -17,3 +17,11 @@
 3. **写入动作**：显式 `capture` 只创建新页面并使用 `--create`；显式 `update` 读取 revision 后使用 `--if-match`，冲突时重读而不是覆盖。
 4. **元数据**：文档保留首个 H1，写入一个 `source`、一个 `type` 和一至三个 `topic` 标签；source 取项目名并回退到 `unknown`，type 初始支持 `experience`/`research` 且允许用户声明扩展。
 5. **验证**：Skill 以 RED/GREEN/REFACTOR eval 验证完整链路，覆盖真实 SilverBullet 返回形状和 Agent 下一步选择。
+
+## v2 (2026-11-27, scheduled maintainer boundary)
+
+1. **两类写入者**：交互式 coding agent 保持 read-first，只在用户显式调用时 capture/update，绝不在任务中途自动打分或自动写入；经 owner 显式配置的专职定时维护者（如 Orca nightly bot）获准自动增量沉淀与合并（ADR 0002）。
+2. **同一契约**：维护者沿用平铺 `Knowledge/`、`source/`/`type/`/`topic/` 标签、`--create`/`--if-match` 条件写与读回校验；不新增子目录，不放开 `--overwrite`，不自行发明 type。
+3. **防覆盖人类编辑**：维护者只做追加式合并，不整页替换、不删改人工内容、不改路径；revision 冲突时跳过该页并在报告中记录 `revision_conflict`。
+4. **事后汇报**：每次运行输出创建页、合并 diff、跳过的冲突与错误；无变更时显式报告 no-op。人类 on-the-loop，不设事前审批队列。
+5. **触发意识**：Skill description 覆盖跨仓库工程心智模型、通用原则与已验证的 bash/外部工具/调试手法检索，用户未提 SilverBullet 时也应路由到本 skill。

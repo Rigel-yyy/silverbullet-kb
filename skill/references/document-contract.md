@@ -73,6 +73,20 @@ sb fs write 'Knowledge/distributed-lock-pitfall--a7f3.md' --if-match '"opaque-re
 
 Exit 5 means the page changed after the read. Reread and reapply the requested change only when it is unambiguous; otherwise stop with a revision conflict for the calling agent. Never blindly retry or overwrite. Read back the final bytes and report the new revision.
 
+## Scheduled maintainer
+
+This section applies only to a dedicated scheduled bot that the owner has explicitly configured as the KB maintainer, for example the Orca nightly bot. An interactive coding agent is never the maintainer: it stays read-first and uses Capture or Update only on explicit user invocation, even when it finds a page that looks stale or a lesson that looks valuable. The decision record is ADR 0002 in this repository.
+
+The maintainer's authority comes from owner configuration, not a per-write invocation, and it uses the same contract as every other writer:
+
+- Write only flat `Knowledge/<readable-slug>--<suffix>.md` paths with exactly one `source/`, one `type/`, and one to three `topic/` tags reused from the live inventory. Do not invent a type; report a proposed type for owner confirmation instead.
+- Create new pages with `--create` and the path-based collision loop. Before treating a lesson as new, search `Knowledge/` for an existing page on the same subject; a match is a merge candidate, never a silent duplicate or an overwrite target.
+- Merge additively: stat the page, read the exact bytes, append or extend sections such as examples, boundaries, and verification sources, and write with `--if-match`. Never replace the full page, delete or rewrite human-authored content, or rename a path.
+- On exit 5 or when the latest bytes no longer allow an unambiguous additive merge, skip the page and record `revision_conflict`. Do not retry blindly and never use `--overwrite`.
+- Read back every successful write and verify path, H1, tags, and revision.
+
+Each run ends with a post-hoc diff report for the owner: created pages, merged pages with their diffs and new revisions, skipped conflicts, and errors. A run with no changes reports an explicit no-op. Writes do not wait for approval, but none are silent.
+
 ## Do not rewrite upstream content
 
 The KB skill adds or validates storage metadata and the first H1/path relationship. It does not rewrite a Feynman lecture or research document for style, decide whether it is valuable, create an inbox, or silently change the document's meaning.

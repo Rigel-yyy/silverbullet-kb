@@ -1,11 +1,13 @@
 ---
 name: silverbullet-kb
-description: Use when working with a personal SilverBullet Space to capture user-selected Markdown, retrieve evidence from `Knowledge/`, or update an explicitly named page, especially when tags, empty results, or CLI/index errors need interpretation.
+description: Use when working with a personal SilverBullet Space to capture user-selected Markdown, retrieve evidence from `Knowledge/`, or update an explicitly named page, especially when tags, empty results, or CLI/index errors need interpretation. Also use, even when SilverBullet is not named, to look up cross-repo engineering mental models, general principles, or verified bash, external-tool, and debugging methods before tackling a cross-repo, environment, or tooling problem or a recurring failure.
 ---
 
 # SilverBullet KB: agent protocol
 
 The consumer is the calling agent. Load the matching reference and return machine-actionable evidence, not a user-facing "not found" sentence.
+
+`Knowledge/` holds cross-repo mental models and verified bash, tool, and debugging methods; search it read-first on cross-repo, environment, tooling, or recurring failures, even when SilverBullet is not named.
 
 ## Operation router
 
@@ -15,6 +17,7 @@ The consumer is the calling agent. Load the matching reference and return machin
 | Put a selected document into the KB | `capture` | `references/document-contract.md`, then `references/sb-cli.md` |
 | Find knowledge for the current task | `search` | `references/search.md`, then `references/sb-cli.md` |
 | Change an existing page | `update` | `references/document-contract.md`, then `references/sb-cli.md` |
+| Run as the owner-configured scheduled maintainer | `maintain` | `references/document-contract.md`, then `references/sb-cli.md` |
 
 ## Shared contract
 
@@ -35,9 +38,13 @@ Use Silversearch for lexical recall, SLIQ for exact `source`, `type`, and `topic
 
 For capture, read the upstream bytes and frontmatter, preserve unrelated keys and the first H1, derive one source/type and one to three topics from the live inventory, generate a readable slug plus short collision suffix under `Knowledge/`, create, and read back. For update, require a path, page link, or unambiguous title; preserve unrelated content and use the revision guard. H1 changes never rename paths; aliases are not maintained by default.
 
+## Writer classes
+
+Interactive agents are read-first and write only on explicit user invocation. Only an owner-configured scheduled maintainer (for example the Orca nightly bot) writes automatically, under the same contract plus additive merges, abort on revision conflict, and a post-hoc diff report: `references/document-contract.md` (Scheduled maintainer).
+
 ## Hard boundaries
 
-Do not auto-score value, create an inbox, use a producing skill as `source`, invent an unconfirmed type, turn temporary search words into tags, expand search scope silently, or treat a command failure as evidence that the knowledge does not exist.
+As an interactive agent, do not auto-score value or auto-write. For any writer, do not create an inbox, use a producing skill as `source`, invent an unconfirmed type, turn temporary search words into tags, expand search scope silently, or treat a command failure as evidence that the knowledge does not exist.
 
 ## Result shape
 
